@@ -7,11 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="litearnoudruzenjebackend" />
+        <module name="Projekat" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Projekat" options="-parameters" />
       <module name="litearnoudruzenjebackend" options="-parameters" />
     </option>
   </component>
