@@ -1,34 +1,50 @@
 package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.dto.FormSubmissionDto;
-import org.camunda.bpm.engine.IdentityService;
+import com.literarnoudruzenje.model.User;
+import com.literarnoudruzenje.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.identity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TestService implements JavaDelegate {
 
-    @Autowired
-    IdentityService identityService;
+    private final UserRepository userRepository;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
+        User user = new User();
         List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("registration");
-        System.out.println(registration);
-        User user = identityService.newUser("");
+
         for (FormSubmissionDto formField : registration) {
-            if(formField.getFieldId().equals("email")) {
-                user.setId(formField.getFieldValue());
+            if(formField.getFieldId().equals("firstName")) {
+                user.setFirstName(formField.getFieldValue());
             }
-            if(formField.getFieldId().equals("sifra")) {
+            if(formField.getFieldId().equals("lastName")) {
+                user.setLastName(formField.getFieldValue());
+            }
+            if(formField.getFieldId().equals("email")) {
+                user.setEmail(formField.getFieldValue());
+            }
+            if(formField.getFieldId().equals("username")) {
+                user.setUsername(formField.getFieldValue());
+            }
+            if(formField.getFieldId().equals("password")) {
                 user.setPassword(formField.getFieldValue());
             }
+            if(formField.getFieldId().equals("city")) {
+                user.setCity(formField.getFieldValue());
+            }
+            if(formField.getFieldId().equals("state")) {
+                user.setState(formField.getFieldValue());
+            }
+
         }
-        identityService.saveUser(user);
+        userRepository.save(user);
     }
 }

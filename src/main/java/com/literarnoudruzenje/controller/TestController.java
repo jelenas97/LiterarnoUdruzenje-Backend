@@ -5,6 +5,8 @@ import com.literarnoudruzenje.dto.FormSubmissionDto;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.TaskFormData;
+import org.camunda.bpm.engine.impl.form.validator.FormFieldValidationException;
+import org.camunda.bpm.engine.impl.form.validator.FormFieldValidatorException;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,22 +56,17 @@ public class TestController {
     @PostMapping(path = "/post/{taskId}", produces = "application/json")
     public @ResponseBody ResponseEntity post(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId) {
         HashMap<String, Object> map = this.mapListToDto(dto);
-
-        // list all running/unsuspended instances of the process
-//		    ProcessInstance processInstance =
-//		        runtimeService.createProcessInstanceQuery()
-//		            .processDefinitionKey("Process_1")
-//		            .active() // we only want the unsuspended process instances
-//		            .list().get(0);
-
-//			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().get(0);
-
-
-
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
         runtimeService.setVariable(processInstanceId, "registration", dto);
-        formService.submitTaskForm(taskId, map);
+        runtimeService.setVariable(processInstanceId, "validation", true);
+
+        try {
+            formService.submitTaskForm(taskId, map);
+        }catch (FormFieldValidatorException formFieldValidatorException) {
+            runtimeService.setVariable(processInstanceId, "validation", false);
+            throw new FormFieldValidationException("", formFieldValidatorException.getMessage());
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
