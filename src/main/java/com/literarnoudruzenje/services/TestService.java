@@ -1,6 +1,8 @@
 package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.dto.FormSubmissionDto;
+import com.literarnoudruzenje.model.Genre;
+import com.literarnoudruzenje.model.Reader;
 import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +21,8 @@ public class TestService implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        User user = new User();
+        System.out.println("ubacujem usera");
+        Reader user = new Reader();
         List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("registration");
 
         for (FormSubmissionDto formField : registration) {
@@ -42,6 +46,10 @@ public class TestService implements JavaDelegate {
             }
             if(formField.getFieldId().equals("state")) {
                 user.setState(formField.getFieldValue());
+            }
+            if(formField.getFieldId().equals("genres")) {
+                user.setGenres(formField.getFieldValues().stream()
+                        .map(x -> new Genre(Long.parseLong(x),null)).collect(Collectors.toList()));
             }
 
         }
