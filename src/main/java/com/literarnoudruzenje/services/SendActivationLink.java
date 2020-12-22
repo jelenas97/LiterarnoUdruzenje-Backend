@@ -2,6 +2,7 @@ package com.literarnoudruzenje.services;
 
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +13,19 @@ public class SendActivationLink implements JavaDelegate {
 
     private final EmailService emailService;
 
+    private Expression content;
+
+    private Expression receiver;
+
+    private Expression subject;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        String email = (String)delegateExecution.getVariable("email");
-        emailService.sendNotification(email,"Ovo je neki content", "Naslov mejla");
-        System.out.println(email);
+        //String content = (String) this.content.getValue(delegateExecution);
+        //String receiver = (String) this.receiver.getValue(delegateExecution);
+        //String subject = (String) this.subject.getValue(delegateExecution);
+
+        //emailService.sendNotification(receiver,content, subject);
     }
 
 }

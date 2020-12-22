@@ -74,7 +74,11 @@ public class TestController {
     {
         HashMap<String, Object> map = new HashMap<String, Object>();
         for(FormSubmissionDto temp : list){
-            map.put(temp.getFieldId(), temp.getFieldValue());
+            if(temp.getFieldValue() == null) {
+                map.put(temp.getFieldId(), temp.getFieldValues());
+            } else {
+                map.put(temp.getFieldId(), temp.getFieldValue());
+            }
         }
 
         return map;
