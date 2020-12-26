@@ -7,14 +7,17 @@ import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.impl.form.validator.FormFieldValidationException;
 import org.camunda.bpm.engine.impl.form.validator.FormFieldValidatorException;
+import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
+import org.camunda.bpm.model.bpmn.instance.Process;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.xpath.XPath;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,6 +44,7 @@ public class TestController {
     public @ResponseBody FormFieldsDto get() {
 
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("Registracija_citaoca");
+        runtimeService.setVariable(pi.getId(), "piId", pi.getId());
 
         Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).list().get(0);
 
@@ -52,6 +56,16 @@ public class TestController {
 
         return new FormFieldsDto(task.getId(), pi.getId(), properties);
     }
+
+    @GetMapping(path = "/activate/{piId}", produces = "application/json")
+    public @ResponseBody String activateUser(@PathVariable String piId) {
+
+        MessageCorrelationResult ecmMessageArrived = runtimeService.createMessageCorrelation("UserActivation")
+                .processInstanceId(piId)
+                .correlateWithResult();
+        return "";
+    }
+
 
     @PostMapping(path = "/post/{taskId}", produces = "application/json")
     public @ResponseBody ResponseEntity post(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId) {

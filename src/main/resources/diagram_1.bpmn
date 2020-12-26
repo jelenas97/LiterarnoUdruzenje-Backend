@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1n7xdsb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
-  <bpmn:process id="Registracija_citaoca" isExecutable="true">
+  <bpmn:process id="Registracija_citaoca" name="User activa" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:extensionElements>
         <camunda:executionListener class="com.literarnoudruzenje.handlers.TestProcessHandler" event="start" />
@@ -8,14 +8,13 @@
       <bpmn:outgoing>Flow_0x6gkw0</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0x6gkw0" sourceRef="StartEvent_1" targetRef="Gateway_0p0qohi" />
-    <bpmn:serviceTask id="Activity_1mnplf7" name="Kreiranje čitaoca" camunda:class="com.literarnoudruzenje.services.TestService">
-      <bpmn:incoming>Flow_15lxmu7</bpmn:incoming>
+    <bpmn:serviceTask id="Activity_1mnplf7" name="Create User" camunda:class="com.literarnoudruzenje.services.TestService">
+      <bpmn:incoming>Flow_1l8g0sw</bpmn:incoming>
       <bpmn:outgoing>Flow_08licsa</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_0g4fl2e">
       <bpmn:incoming>Flow_08licsa</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_08licsa" sourceRef="Activity_1mnplf7" targetRef="Event_0g4fl2e" />
     <bpmn:exclusiveGateway id="Gateway_15pfi3b">
       <bpmn:incoming>Flow_1549vrs</bpmn:incoming>
       <bpmn:outgoing>Flow_0pnfj5v</bpmn:outgoing>
@@ -82,8 +81,19 @@
       <bpmn:outgoing>Flow_1549vrs</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1549vrs" sourceRef="Activity_03rs8sr" targetRef="Gateway_15pfi3b" />
-    <bpmn:sequenceFlow id="Flow_15lxmu7" sourceRef="Activity_0n89oi8" targetRef="Activity_1mnplf7" />
+    <bpmn:sequenceFlow id="Flow_15lxmu7" sourceRef="Activity_0n89oi8" targetRef="Event_1ih65z2" />
     <bpmn:serviceTask id="Activity_0n89oi8" name="Send activation link" camunda:class="com.literarnoudruzenje.services.SendActivationLink">
+      <bpmn:extensionElements>
+        <camunda:field name="content">
+          <camunda:expression>Please activate your account by pressing this link http://localhost:8080/registration/activate/${piId}</camunda:expression>
+        </camunda:field>
+        <camunda:field name="receiver">
+          <camunda:expression>${email}</camunda:expression>
+        </camunda:field>
+        <camunda:field name="subject">
+          <camunda:string>Activation link</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ufzcfc</bpmn:incoming>
       <bpmn:outgoing>Flow_15lxmu7</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -118,9 +128,36 @@
       <bpmn:incoming>Flow_19jxggb</bpmn:incoming>
       <bpmn:outgoing>Flow_1evcwkg</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_08licsa" sourceRef="Activity_1mnplf7" targetRef="Event_0g4fl2e" />
+    <bpmn:intermediateCatchEvent id="Event_1ih65z2" name="User activated account">
+      <bpmn:incoming>Flow_15lxmu7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1l8g0sw</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_011rtpi" messageRef="Message_0tgp4rg" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1l8g0sw" sourceRef="Event_1ih65z2" targetRef="Activity_1mnplf7" />
+    <bpmn:boundaryEvent id="Event_14nzae8" attachedToRef="Activity_1mnplf7">
+      <bpmn:outgoing>Flow_1ttozmz</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0ioyo4o" errorRef="Error_1mttxlo" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1ttozmz" sourceRef="Event_14nzae8" targetRef="Event_1bzu0rf" />
+    <bpmn:endEvent id="Event_1bzu0rf" name="Registration failed">
+      <bpmn:incoming>Flow_1ttozmz</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1plbmcw" errorRef="Error_0kfo5df" />
+    </bpmn:endEvent>
   </bpmn:process>
+  <bpmn:message id="Message_0tgp4rg" name="UserActivation" />
+  <bpmn:error id="Error_1mttxlo" name="UserAlreadyExists" errorCode="UserAlreadyExists" />
+  <bpmn:error id="Error_0kfo5df" name="Error_3557vug" errorCode="RegistrationFailed" camunda:errorMessage="Registration failed" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Registracija_citaoca">
+      <bpmndi:BPMNEdge id="Flow_1l8g0sw_di" bpmnElement="Flow_1l8g0sw">
+        <di:waypoint x="1038" y="187" />
+        <di:waypoint x="1110" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08licsa_di" bpmnElement="Flow_08licsa">
+        <di:waypoint x="1210" y="187" />
+        <di:waypoint x="1242" y="187" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1evcwkg_di" bpmnElement="Flow_1evcwkg">
         <di:waypoint x="720" y="90" />
         <di:waypoint x="760" y="90" />
@@ -141,7 +178,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_15lxmu7_di" bpmnElement="Flow_15lxmu7">
         <di:waypoint x="920" y="187" />
-        <di:waypoint x="950" y="187" />
+        <di:waypoint x="1002" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1549vrs_di" bpmnElement="Flow_1549vrs">
         <di:waypoint x="410" y="187" />
@@ -161,22 +198,23 @@
         <di:waypoint x="495" y="187" />
         <di:waypoint x="545" y="187" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08licsa_di" bpmnElement="Flow_08licsa">
-        <di:waypoint x="1050" y="187" />
-        <di:waypoint x="1082" y="187" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0x6gkw0_di" bpmnElement="Flow_0x6gkw0">
         <di:waypoint x="188" y="187" />
         <di:waypoint x="225" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ttozmz_di" bpmnElement="Flow_1ttozmz">
+        <di:waypoint x="1160" y="245" />
+        <di:waypoint x="1160" y="310" />
+        <di:waypoint x="1232" y="310" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="169" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1px0834_di" bpmnElement="Activity_1mnplf7">
-        <dc:Bounds x="950" y="147" width="100" height="80" />
+        <dc:Bounds x="1110" y="147" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0g4fl2e_di" bpmnElement="Event_0g4fl2e">
-        <dc:Bounds x="1082" y="169" width="36" height="36" />
+        <dc:Bounds x="1242" y="169" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_15pfi3b_di" bpmnElement="Gateway_15pfi3b" isMarkerVisible="true">
         <dc:Bounds x="445" y="162" width="50" height="50" />
@@ -198,6 +236,21 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_041qtuw_di" bpmnElement="Activity_1mt99xv">
         <dc:Bounds x="620" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bjauuw_di" bpmnElement="Event_1ih65z2">
+        <dc:Bounds x="1002" y="169" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="986" y="212" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ozuzoh_di" bpmnElement="Event_1bzu0rf">
+        <dc:Bounds x="1232" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1206" y="335" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0524f2f_di" bpmnElement="Event_14nzae8">
+        <dc:Bounds x="1142" y="209" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
