@@ -58,15 +58,9 @@ public class TestController {
         HashMap<String, Object> map = this.mapListToDto(dto);
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
+        runtimeService.setVariable(processInstanceId, "form-data", map);
         runtimeService.setVariable(processInstanceId, "registration", dto);
-        runtimeService.setVariable(processInstanceId, "validation", true);
-
-        try {
-            formService.submitTaskForm(taskId, map);
-        }catch (FormFieldValidatorException formFieldValidatorException) {
-            runtimeService.setVariable(processInstanceId, "validation", false);
-            throw new FormFieldValidationException("", formFieldValidatorException.getMessage());
-        }
+        formService.submitTaskForm(taskId, map);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
