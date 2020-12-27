@@ -2,6 +2,7 @@ package com.literarnoudruzenje.controller;
 
 import com.literarnoudruzenje.dto.FormFieldsDto;
 import com.literarnoudruzenje.dto.FormSubmissionDto;
+import com.literarnoudruzenje.dto.ProcessDto;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.TaskFormData;
@@ -13,6 +14,7 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,7 @@ import javax.xml.xpath.XPath;
 import java.util.HashMap;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/registration")
 public class TestController {
 
@@ -40,13 +42,19 @@ public class TestController {
     @Autowired
     FormService formService;
 
-    @GetMapping(path = "/get", produces = "application/json")
-    public @ResponseBody FormFieldsDto get() {
-
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("Registracija_citaoca");
+    @GetMapping(path = "/startReader")
+    public ProcessDto startReaderProcess(){
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("ReaderRegistration");
         runtimeService.setVariable(pi.getId(), "piId", pi.getId());
+        ProcessDto processDto = new ProcessDto();
+        processDto.setProcessId(pi.getId());
+        return processDto;
+    }
 
-        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).list().get(0);
+    @GetMapping(path = "/get/{processId}", produces = "application/json")
+    public @ResponseBody FormFieldsDto get(@PathVariable String processId) {
+
+        Task task = taskService.createTaskQuery().processInstanceId(processId).list().get(0);
 
         TaskFormData tfd = formService.getTaskFormData(task.getId());
         List<FormField> properties = tfd.getFormFields();
@@ -54,7 +62,7 @@ public class TestController {
             System.out.println(fp.getId() + fp.getType());
         }
 
-        return new FormFieldsDto(task.getId(), pi.getId(), properties);
+        return new FormFieldsDto(task.getId(), processId, properties);
     }
 
     @GetMapping(path = "/activate/{piId}", produces = "application/json")
@@ -72,15 +80,9 @@ public class TestController {
         HashMap<String, Object> map = this.mapListToDto(dto);
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
+        runtimeService.setVariable(processInstanceId, "form-data", map);
         runtimeService.setVariable(processInstanceId, "registration", dto);
-        runtimeService.setVariable(processInstanceId, "validation", true);
-
-        try {
-            formService.submitTaskForm(taskId, map);
-        }catch (FormFieldValidatorException formFieldValidatorException) {
-            runtimeService.setVariable(processInstanceId, "validation", false);
-            throw new FormFieldValidationException("", formFieldValidatorException.getMessage());
-        }
+        formService.submitTaskForm(taskId, map);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
