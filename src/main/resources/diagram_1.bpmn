@@ -138,13 +138,10 @@
               <camunda:constraint name="required" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="genres" label="Genres" type="enum">
-            <camunda:value id="drama" name="Drama" />
-            <camunda:value id="thriller" name="Thriller" />
-            <camunda:value id="horor" name="Horor" />
-          </camunda:formField>
-          <camunda:formField id="betaReader" label="Are you beta reader?" type="boolean" />
+          <camunda:formField id="genres" label="Genres" type="multiSelect" />
+          <camunda:formField id="betaReader" label="Are you beta reader?" type="boolean" defaultValue="false" />
         </camunda:formData>
+        <camunda:taskListener class="com.literarnoudruzenje.handlers.GetGenresHandler" event="create" id="get_genres_listener" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_005rr4i</bpmn:incoming>
       <bpmn:outgoing>Flow_1549vrs</bpmn:outgoing>
@@ -153,6 +150,32 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Registracija_citaoca">
+      <bpmndi:BPMNEdge id="Flow_1evcwkg_di" bpmnElement="Flow_1evcwkg">
+        <di:waypoint x="720" y="90" />
+        <di:waypoint x="760" y="90" />
+        <di:waypoint x="760" y="162" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19jxggb_di" bpmnElement="Flow_19jxggb">
+        <di:waypoint x="570" y="162" />
+        <di:waypoint x="570" y="90" />
+        <di:waypoint x="620" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jqliwu_di" bpmnElement="Flow_0jqliwu">
+        <di:waypoint x="595" y="187" />
+        <di:waypoint x="735" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ufzcfc_di" bpmnElement="Flow_0ufzcfc">
+        <di:waypoint x="785" y="187" />
+        <di:waypoint x="820" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15lxmu7_di" bpmnElement="Flow_15lxmu7">
+        <di:waypoint x="920" y="187" />
+        <di:waypoint x="950" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1549vrs_di" bpmnElement="Flow_1549vrs">
+        <di:waypoint x="410" y="187" />
+        <di:waypoint x="445" y="187" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00o0n86_di" bpmnElement="Flow_00o0n86">
         <di:waypoint x="910" y="90" />
         <di:waypoint x="960" y="90" />
@@ -212,8 +235,8 @@
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="169" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1px0834_di" bpmnElement="Activity_1mnplf7">
-        <dc:Bounds x="1180" y="147" width="100" height="80" />
+      <bpmndi:BPMNShape id="Gateway_0p0qohi_di" bpmnElement="Gateway_0p0qohi" isMarkerVisible="true">
+        <dc:Bounds x="225" y="162" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0g4fl2e_di" bpmnElement="Event_0g4fl2e">
         <dc:Bounds x="1322" y="169" width="36" height="36" />
@@ -232,6 +255,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_15ujcce_di" bpmnElement="Gateway_15ujcce" isMarkerVisible="true">
         <dc:Bounds x="615" y="162" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_15ujcce_di" bpmnElement="Gateway_15ujcce" isMarkerVisible="true">
+        <dc:Bounds x="545" y="162" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_041qtuw_di" bpmnElement="Activity_1mt99xv">
         <dc:Bounds x="670" y="50" width="100" height="80" />
