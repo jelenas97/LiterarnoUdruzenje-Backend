@@ -152,15 +152,45 @@
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1549vrs" sourceRef="Activity_03rs8sr" targetRef="Activity_1uiumwc" />
     <bpmn:sequenceFlow id="Flow_0dwqrea" sourceRef="Activity_03rs8sr" targetRef="Activity_1uiumwc" />
-    <bpmn:sequenceFlow id="Flow_1iw988x" sourceRef="Activity_0n89oi8" targetRef="Activity_10ccorz" />
+    <bpmn:sequenceFlow id="Flow_1iw988x" sourceRef="Activity_0n89oi8" targetRef="Event_0bq4e67" />
     <bpmn:sequenceFlow id="Flow_1pnv5ez" sourceRef="Activity_10ccorz" targetRef="Event_0g4fl2e" />
     <bpmn:serviceTask id="Activity_10ccorz" name="Create user" camunda:class="com.literarnoudruzenje.services.TestService">
-      <bpmn:incoming>Flow_1iw988x</bpmn:incoming>
+      <bpmn:incoming>Flow_1wng8lh</bpmn:incoming>
       <bpmn:outgoing>Flow_1pnv5ez</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="Event_0bq4e67" name="User activated account">
+      <bpmn:incoming>Flow_1iw988x</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wng8lh</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0tc6a8c" messageRef="Message_0nu8hgc" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1wng8lh" sourceRef="Event_0bq4e67" targetRef="Activity_10ccorz" />
+    <bpmn:boundaryEvent id="Event_0dl1xoc" attachedToRef="Activity_10ccorz">
+      <bpmn:outgoing>Flow_14lbwdj</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1rfyokb" errorRef="Error_1ntszh1" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_03bsy6t" name="Registration failed">
+      <bpmn:incoming>Flow_14lbwdj</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0isz43a" errorRef="Error_02y8dgh" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_14lbwdj" sourceRef="Event_0dl1xoc" targetRef="Event_03bsy6t" />
   </bpmn:process>
+  <bpmn:message id="Message_0nu8hgc" name="UserActivation" />
+  <bpmn:error id="Error_1ntszh1" name="UserAlreadyExists" errorCode="UserAlreadyExists" />
+  <bpmn:error id="Error_02y8dgh" name="Error_3557vug" errorCode="RegistrationFailed" camunda:errorMessage="Registration failed" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Registracija_citaoca">
+      <bpmndi:BPMNEdge id="Flow_1pnv5ez_di" bpmnElement="Flow_1pnv5ez">
+        <di:waypoint x="1310" y="237" />
+        <di:waypoint x="1412" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1iw988x_di" bpmnElement="Flow_1iw988x">
+        <di:waypoint x="1110" y="237" />
+        <di:waypoint x="1142" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dwqrea_di" bpmnElement="Flow_0dwqrea">
+        <di:waypoint x="381" y="237" />
+        <di:waypoint x="410" y="237" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1549vrs_di" bpmnElement="Flow_1549vrs">
         <di:waypoint x="381" y="237" />
         <di:waypoint x="410" y="237" />
@@ -209,41 +239,29 @@
         <di:waypoint x="188" y="237" />
         <di:waypoint x="205" y="237" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0dwqrea_di" bpmnElement="Flow_0dwqrea">
-        <di:waypoint x="381" y="237" />
-        <di:waypoint x="410" y="237" />
+      <bpmndi:BPMNEdge id="Flow_1wng8lh_di" bpmnElement="Flow_1wng8lh">
+        <di:waypoint x="1178" y="237" />
+        <di:waypoint x="1210" y="237" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1iw988x_di" bpmnElement="Flow_1iw988x">
-        <di:waypoint x="1110" y="237" />
-        <di:waypoint x="1150" y="237" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1pnv5ez_di" bpmnElement="Flow_1pnv5ez">
-        <di:waypoint x="1250" y="237" />
-        <di:waypoint x="1322" y="237" />
+      <bpmndi:BPMNEdge id="Flow_14lbwdj_di" bpmnElement="Flow_14lbwdj">
+        <di:waypoint x="1280" y="295" />
+        <di:waypoint x="1280" y="350" />
+        <di:waypoint x="1342" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="219" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0g4fl2e_di" bpmnElement="Event_0g4fl2e">
-        <dc:Bounds x="1322" y="219" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_15pfi3b_di" bpmnElement="Gateway_15pfi3b" isMarkerVisible="true">
         <dc:Bounds x="535" y="212" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1o4q2bb_di" bpmnElement="Gateway_1o4q2bb" isMarkerVisible="true">
-        <dc:Bounds x="935" y="212" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0y6rkv0_di" bpmnElement="Activity_03rs8sr">
-        <dc:Bounds x="281" y="197" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0p0qohi_di" bpmnElement="Gateway_0p0qohi" isMarkerVisible="true">
         <dc:Bounds x="205" y="212" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1eqwhfa_di" bpmnElement="Activity_1uiumwc">
-        <dc:Bounds x="410" y="197" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0gkyay4_di" bpmnElement="Activity_0n89oi8">
+        <dc:Bounds x="1010" y="197" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0zsdy5z_di" bpmnElement="Activity_1ok2gql">
-        <dc:Bounds x="830" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="Gateway_1o4q2bb_di" bpmnElement="Gateway_1o4q2bb" isMarkerVisible="true">
+        <dc:Bounds x="935" y="212" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_15ujcce_di" bpmnElement="Gateway_15ujcce" isMarkerVisible="true">
         <dc:Bounds x="615" y="212" width="50" height="50" />
@@ -251,11 +269,35 @@
       <bpmndi:BPMNShape id="Activity_041qtuw_di" bpmnElement="Activity_1mt99xv">
         <dc:Bounds x="670" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0gkyay4_di" bpmnElement="Activity_0n89oi8">
-        <dc:Bounds x="1010" y="197" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1eqwhfa_di" bpmnElement="Activity_1uiumwc">
+        <dc:Bounds x="410" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zsdy5z_di" bpmnElement="Activity_1ok2gql">
+        <dc:Bounds x="830" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y6rkv0_di" bpmnElement="Activity_03rs8sr">
+        <dc:Bounds x="281" y="197" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0bu65zo_di" bpmnElement="Activity_10ccorz">
-        <dc:Bounds x="1150" y="197" width="100" height="80" />
+        <dc:Bounds x="1210" y="197" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0bq4e67_di" bpmnElement="Event_0bq4e67">
+        <dc:Bounds x="1142" y="219" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1126" y="262" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0g4fl2e_di" bpmnElement="Event_0g4fl2e">
+        <dc:Bounds x="1412" y="219" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03bsy6t_di" bpmnElement="Event_03bsy6t">
+        <dc:Bounds x="1342" y="332" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1316" y="375" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0dl1xoc_di" bpmnElement="Event_0dl1xoc">
+        <dc:Bounds x="1262" y="259" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
