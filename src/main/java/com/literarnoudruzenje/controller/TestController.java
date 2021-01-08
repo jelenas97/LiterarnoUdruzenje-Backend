@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -104,16 +105,20 @@ public class TestController {
     }
 
     @PostMapping(path = "/uploadFile/{taskId}", produces = "application/json")
-    public @ResponseBody ResponseEntity post(@RequestParam("file") MultipartFile file, @PathVariable String taskId) throws IOException {
+    public @ResponseBody ResponseEntity post(@RequestParam("files") MultipartFile[] files, @PathVariable String taskId) throws IOException {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
-        FileValue typedFileValue = Variables
-                .fileValue(file.getOriginalFilename())
-                .file(file.getBytes())
-                .mimeType("application/pdf")
-                .encoding("UTF-8")
-                .create();
-        runtimeService.setVariable(processInstanceId, "file", typedFileValue);
+        List<FileValue> values = new ArrayList<FileValue>();
+        for(MultipartFile file : files) {
+            FileValue typedFileValue = Variables
+                    .fileValue(file.getOriginalFilename())
+                    .file(file.getBytes())
+                    .mimeType("application/pdf")
+                    .encoding("UTF-8")
+                    .create();
+            values.add(typedFileValue);
+        }
+        runtimeService.setVariable(processInstanceId, "files", values);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -128,9 +133,9 @@ public class TestController {
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
 
-        FileValue newFile = runtimeService.getVariableTyped(taskId,"file");
-        InputStream is = newFile.getValue();
-        File targetFile = new File(newFile.getFilename());
+        List<FileValue> values = (List<FileValue>) runtimeService.getVariable(taskId,"files");
+        InputStream is = values.get(0).getValue();
+        File targetFile = new File(values.get(0).getFilename());
 
         java.nio.file.Files.copy(
                 is,
