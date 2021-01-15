@@ -65,9 +65,12 @@ public class TestController {
 
     @GetMapping(path = "/get/{processId}", produces = "application/json")
     public @ResponseBody FormFieldsDto get(@PathVariable String processId) {
-
-        Task task = taskService.createTaskQuery().processInstanceId(processId).list().get(0);
-
+        Task task;
+        try {
+            task = taskService.createTaskQuery().processInstanceId(processId).list().get(0);
+        } catch (IndexOutOfBoundsException e) {
+            task = taskService.createTaskQuery().taskId(processId).singleResult();
+        }
         TaskFormData tfd = formService.getTaskFormData(task.getId());
         List<FormField> properties = tfd.getFormFields();
         for(FormField fp : properties) {
@@ -106,6 +109,8 @@ public class TestController {
 
     @PostMapping(path = "/uploadFile/{taskId}", produces = "application/json")
     public @ResponseBody ResponseEntity post(@RequestParam("files") MultipartFile[] files, @PathVariable String taskId) throws IOException {
+        HashMap<String, Object> map = new HashMap<>();
+
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
         List<FileValue> values = new ArrayList<FileValue>();
@@ -120,7 +125,17 @@ public class TestController {
         }
         runtimeService.setVariable(processInstanceId, "files", values);
 
+        try {
+            formService.submitTaskForm(taskId, map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Files not uploaded");
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
 
