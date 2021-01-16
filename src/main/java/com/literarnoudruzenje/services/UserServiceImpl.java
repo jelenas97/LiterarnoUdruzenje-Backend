@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
+   @Override
     public List<UserDTO> findAllUsers() {
         this.userRepository.findAllUsers();
         List<UserDTO> users = new ArrayList<>();
@@ -48,5 +48,7 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findOneById(id);
     }
 
+    @Override
+    public  User saveUser(User user){ return this.userRepository.save(user);}
 
 }
