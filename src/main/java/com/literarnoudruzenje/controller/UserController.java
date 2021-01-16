@@ -40,7 +40,7 @@ public class UserController {
 
         List<TaskDto> dtos = new ArrayList<TaskDto>();
         for (Task task : tasks) {
-            TaskDto t = new TaskDto(task.getId(), task.getName(), task.getAssignee());
+            TaskDto t = new TaskDto(task.getId(), task.getName(), task.getAssignee(), task.getCreateTime().toString());
             dtos.add(t);
         }
 

@@ -5,16 +5,18 @@ public class TaskDto {
 	String taskId;
 	String name;
 	String assignee;
+	String dateTime;
 	
 	public TaskDto() {
 		super();
 	}
 	
-	public TaskDto(String taskId, String name, String assignee) {
+	public TaskDto(String taskId, String name, String assignee, String dateTime) {
 		super();
 		this.taskId = taskId;
 		this.name = name;
 		this.assignee = assignee;
+		this.dateTime = dateTime;
 	}
 
 	public String getTaskId() {
@@ -41,4 +43,11 @@ public class TaskDto {
 		this.assignee = assignee;
 	}
 
+	public String getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(String dateTime) {
+		this.dateTime = dateTime;
+	}
 }

@@ -3,8 +3,7 @@ package com.literarnoudruzenje.services;
 import com.literarnoudruzenje.dto.FormSubmissionDto;
 import com.literarnoudruzenje.model.Genre;
 import com.literarnoudruzenje.model.Reader;
-import com.literarnoudruzenje.model.User;
-import com.literarnoudruzenje.repository.UserRepository;
+import com.literarnoudruzenje.model.Writer;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -14,17 +13,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
-public class TestService implements JavaDelegate {
+public class SaveWriterService implements JavaDelegate {
 
     @Autowired
     private UserService userService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        Reader user = new Reader();
+        Writer user = new Writer();
         List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("registration");
 
         for (FormSubmissionDto formField : registration) {
