@@ -1,19 +1,24 @@
 package com.literarnoudruzenje.services;
 
-import com.literarnoudruzenje.dto.UserDTO;
 import com.literarnoudruzenje.model.User;
+import com.literarnoudruzenje.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
+@Service
+public class UserService {
+    @Autowired
+    private UserRepository userRepository;
 
-public interface UserService {
-    List<UserDTO> findAllUsers();
+    public User saveUser(User user) {
+        return this.userRepository.save(user);
+    }
 
-    User findByEmail(String email);
+    public User findByUsername(String username) {
+        return this.userRepository.findByUsername(username);
+    }
 
-    User findByUsername(String username);
-
-    User findById(Long id);
-
-    User saveUser(User user);
-
+    public User findByEmail(String email) {
+        return this.userRepository.findByEmail(email);
+    }
 }

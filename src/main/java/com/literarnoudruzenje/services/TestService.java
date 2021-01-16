@@ -7,6 +7,7 @@ import com.literarnoudruzenje.model.Reader;
 import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,9 @@ public class TestService implements JavaDelegate {
     @Autowired
     private AuthorityService authorityService;
 
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        System.out.println("ubacujem usera");
         Reader user = new Reader();
         List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("registration");
 
@@ -44,10 +45,18 @@ public class TestService implements JavaDelegate {
                 user.setLastName(formField.getFieldValue());
             }
             if(formField.getFieldId().equals("email")) {
-                user.setEmail(formField.getFieldValue());
+                if (userService.findByEmail(formField.getFieldValue()) == null) {
+                    user.setEmail(formField.getFieldValue());
+                } else {
+                    throw new BpmnError("UserAlreadyExists");
+                }
             }
             if(formField.getFieldId().equals("username")) {
-                user.setUsername(formField.getFieldValue());
+                if (userService.findByUsername(formField.getFieldValue()) == null) {
+                    user.setUsername(formField.getFieldValue());
+                } else {
+                    throw new BpmnError("UserAlreadyExists");
+                }
             }
             if(formField.getFieldId().equals("password")) {
                 user.setPassword( passwordEncoder.encode(formField.getFieldValue()));
@@ -64,11 +73,13 @@ public class TestService implements JavaDelegate {
             }
 
         }
+        
         Authority authority = authorityService.findByName("READER");
         List<Authority> authorities = new ArrayList<>();
         authorities.add(authority);
 
         user.setAuthorities(authorities);
+
         userService.saveUser(user);
     }
 }
