@@ -3,6 +3,7 @@ package com.literarnoudruzenje.controller;
 import com.literarnoudruzenje.dto.UserDTO;
 import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.services.UserService;
+import com.literarnoudruzenje.services.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,9 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private UserServiceInterface userServiceInterface;
+
+    @Autowired
     IdentityService identityService;
 
     @Autowired
@@ -49,7 +53,7 @@ public class UserController {
     public ResponseEntity<?> getUsers(){
 
         try {
-            List<UserDTO> users = this.userService.findAllUsers();
+            List<UserDTO> users = this.userServiceInterface.findAllUsers();
 
             return new ResponseEntity<>(users, HttpStatus.OK);
 
