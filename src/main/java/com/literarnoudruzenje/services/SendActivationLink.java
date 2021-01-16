@@ -21,11 +21,11 @@ public class SendActivationLink implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        //String content = (String) this.content.getValue(delegateExecution);
-        //String receiver = (String) this.receiver.getValue(delegateExecution);
-        //String subject = (String) this.subject.getValue(delegateExecution);
+        String content = (String) this.content.getValue(delegateExecution);
+        String receiver = (String) this.receiver.getValue(delegateExecution);
+        String subject = (String) this.subject.getValue(delegateExecution);
 
-        //emailService.sendNotification(receiver,content, subject);
+        emailService.sendNotification(receiver,content, subject);
     }
 
 }
