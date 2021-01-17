@@ -2,9 +2,7 @@ package com.literarnoudruzenje.model;
 
 import lombok.Data;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -13,5 +11,8 @@ import java.util.List;
 public class Writer extends User {
 
     @ManyToMany
+    @JoinTable(name = "writer_genres",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
     private List<Genre> genres;
 }
