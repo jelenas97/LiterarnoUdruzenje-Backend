@@ -7,11 +7,11 @@ import java.util.List;
 
 @Data
 @Entity
-@DiscriminatorValue("READER")
-public class Reader extends User {
+@DiscriminatorValue("WRITER")
+public class Writer extends User {
 
     @ManyToMany
-    @JoinTable(name = "reader_genres",
+    @JoinTable(name = "writer_genres",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
     private List<Genre> genres;
