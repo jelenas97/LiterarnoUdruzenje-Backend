@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TestService implements JavaDelegate {
+public class SaveReaderService implements JavaDelegate {
 
     @Autowired
     private UserService userService;
@@ -77,9 +77,7 @@ public class TestService implements JavaDelegate {
         Authority authority = authorityService.findByName("READER");
         List<Authority> authorities = new ArrayList<>();
         authorities.add(authority);
-
         user.setAuthorities(authorities);
-
         userService.saveUser(user);
     }
 }

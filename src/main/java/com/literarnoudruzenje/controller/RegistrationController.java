@@ -37,7 +37,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/registration")
-public class TestController {
+public class RegistrationController {
 
     @Autowired
     IdentityService identityService;
@@ -56,7 +56,16 @@ public class TestController {
 
     @GetMapping(path = "/startReader")
     public ProcessDto startReaderProcess(){
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("Writer_registration");
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("ReaderRegistration");
+        runtimeService.setVariable(pi.getId(), "piId", pi.getId());
+        ProcessDto processDto = new ProcessDto();
+        processDto.setProcessId(pi.getId());
+        return processDto;
+    }
+
+    @GetMapping(path = "/startWriter")
+    public ProcessDto startWriterProcess(){
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("WriterRegistration");
         runtimeService.setVariable(pi.getId(), "piId", pi.getId());
         ProcessDto processDto = new ProcessDto();
         processDto.setProcessId(pi.getId());
@@ -89,6 +98,7 @@ public class TestController {
                     .correlateWithResult();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("User already activated his account");
