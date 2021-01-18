@@ -125,9 +125,9 @@
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="files" label="Upload two files" type="file">
-            <camunda:validation>
-              <camunda:constraint name="minlength" config="2" />
-            </camunda:validation>
+            <camunda:properties>
+              <camunda:property id="minlength" value="2" />
+            </camunda:properties>
           </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
