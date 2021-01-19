@@ -82,9 +82,8 @@ public class RegistrationController {
         }
         TaskFormData tfd = formService.getTaskFormData(task.getId());
         List<FormField> properties = tfd.getFormFields();
-        for(FormField fp : properties) {
-            System.out.println(fp.getId() + fp.getType());
-        }
+
+
 
         return new FormFieldsDto(task.getId(), processId, properties);
     }
@@ -157,10 +156,17 @@ public class RegistrationController {
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
-
-        List<FileValue> values = (List<FileValue>) runtimeService.getVariable(taskId,"files");
-        InputStream is = values.get(0).getValue();
-        File targetFile = new File(values.get(0).getFilename());
+        FileValue fileToDownload = null;
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        String processInstanceId = task.getProcessInstanceId();
+        List<FileValue> values = (List<FileValue>) runtimeService.getVariable(processInstanceId,"files");
+        for (FileValue value : values) {
+            if (value.getFilename().equals(fileName + ".pdf")) {
+                fileToDownload = value;
+            }
+        }
+        InputStream is = fileToDownload.getValue();
+        File targetFile = new File(fileToDownload.getFilename());
 
         java.nio.file.Files.copy(
                 is,
@@ -177,8 +183,21 @@ public class RegistrationController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(targetFile.length())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
+    }
+
+    @GetMapping(path = "/files/{taskId}", produces = "application/json")
+    public @ResponseBody List<String> getFileNames(@PathVariable String taskId) {
+
+        List<String> fileNames = new ArrayList<>();
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        String processInstanceId = task.getProcessInstanceId();
+        List<FileValue> values = (List<FileValue>) runtimeService.getVariable(processInstanceId,"files");
+        for(FileValue value : values) {
+            fileNames.add(value.getFilename());
+        }
+        return fileNames;
     }
 
     private HashMap<String, Object> mapListToDto(List<FormSubmissionDto> list)

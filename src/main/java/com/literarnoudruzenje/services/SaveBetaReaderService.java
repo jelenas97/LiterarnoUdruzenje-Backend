@@ -2,9 +2,9 @@ package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.dto.FormSubmissionDto;
 import com.literarnoudruzenje.model.Authority;
+import com.literarnoudruzenje.model.BetaReader;
 import com.literarnoudruzenje.model.Genre;
 import com.literarnoudruzenje.model.Reader;
-import com.literarnoudruzenje.model.Writer;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -16,9 +16,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
-public class SaveWriterService implements JavaDelegate {
+public class SaveBetaReaderService implements JavaDelegate {
 
     @Autowired
     private UserService userService;
@@ -28,11 +29,14 @@ public class SaveWriterService implements JavaDelegate {
 
     @Autowired
     private AuthorityService authorityService;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        Writer user = new Writer();
-        List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("registration");
-
+        BetaReader user = new BetaReader();
+        List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("readerForm");
+        List<FormSubmissionDto> betaGenres = (List<FormSubmissionDto>)delegateExecution.getVariable("betaReaderForm");
+        user.setBetaGenres(betaGenres.get(0).getFieldValues().stream()
+                .map(x -> new Genre(Long.parseLong(x),null)).collect(Collectors.toList()));
         for (FormSubmissionDto formField : registration) {
             if(formField.getFieldId().equals("firstName")) {
                 user.setFirstName(formField.getFieldValue());
@@ -69,7 +73,8 @@ public class SaveWriterService implements JavaDelegate {
             }
 
         }
-        Authority authority = authorityService.findByName("Writer");
+
+        Authority authority = authorityService.findByName("BETAREADER");
         List<Authority> authorities = new ArrayList<>();
         authorities.add(authority);
         user.setAuthorities(authorities);
