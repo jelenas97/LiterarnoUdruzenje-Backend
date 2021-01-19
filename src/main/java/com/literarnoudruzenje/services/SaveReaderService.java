@@ -35,7 +35,7 @@ public class SaveReaderService implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         Reader user = new Reader();
-        List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("registration");
+        List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("readerForm");
 
         for (FormSubmissionDto formField : registration) {
             if(formField.getFieldId().equals("firstName")) {
