@@ -73,6 +73,9 @@
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1rymf7s" sourceRef="Activity_0ksxr7v" targetRef="Gateway_1rdoeyc" />
     <bpmn:serviceTask id="Activity_0ksxr7v" name="Validation" camunda:class="com.literarnoudruzenje.services.FormFieldInputValidation">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="com.literarnoudruzenje.handlers.SaveWriterForm" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1e5sumk</bpmn:incoming>
       <bpmn:outgoing>Flow_1rymf7s</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -686,7 +689,7 @@ execution.setVariable(“numberOfMore”,ctr)</bpmn:script>
       <bpmndi:BPMNShape id="Gateway_12solwo_di" bpmnElement="Gateway_12solwo" isMarkerVisible="true">
         <dc:Bounds x="675" y="495" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="641" y="552" width="59" height="27" />
+          <dc:Bounds x="641" y="476" width="59" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0rgmz7x_di" bpmnElement="Gateway_0rgmz7x" isMarkerVisible="true">

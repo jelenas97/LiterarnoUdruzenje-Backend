@@ -31,7 +31,7 @@ public class SaveWriterService implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         Writer user = new Writer();
-        List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("registration");
+        List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("writerForm");
 
         for (FormSubmissionDto formField : registration) {
             if(formField.getFieldId().equals("firstName")) {
