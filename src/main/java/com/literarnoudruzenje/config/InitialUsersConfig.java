@@ -21,6 +21,8 @@ public class InitialUsersConfig {
     private static final String GROUP_TYPE = "WORKFLOW";
     private static final String BOARD_MEMBERS = "boardMembers";
     private static final String BOARD_MEMBER_PASSWORD = "boardMember";
+    private static final String EDITORS = "editors";
+    private static final String EDITOR_PASSWORD = "editor";
     private static final String TASKLIST = "tasklist";
 
     @Autowired
@@ -32,6 +34,7 @@ public class InitialUsersConfig {
     @PostConstruct
     public void setupUsers() {
         createBoardMembers();
+        createEditors();
     }
 
     private void createBoardMembers() {
@@ -77,6 +80,35 @@ public class InitialUsersConfig {
             identityService.createMembership("boardMember4", BOARD_MEMBERS);
 
             //createAuthorizations(BOARD_MEMBERS);
+        }
+    }
+
+    private void createEditors() {
+
+        List<User> users = identityService.createUserQuery().userIdIn("editor1", "editor2").list();
+
+        if (users.isEmpty()) {
+            User user1 = identityService.newUser("editor1");
+            user1.setEmail("editor1@mail.com");
+            user1.setFirstName("Editor1");
+            user1.setLastName("Editor1");
+            user1.setPassword(EDITOR_PASSWORD);
+            identityService.saveUser(user1);
+
+            User user2 = identityService.newUser("editor2");
+            user2.setEmail("editor2@mail.com");
+            user2.setFirstName("Editor2");
+            user2.setLastName("Editor2");
+            user2.setPassword(EDITOR_PASSWORD);
+            identityService.saveUser(user2);
+
+            Group editors = identityService.newGroup(EDITORS);
+            editors.setName("editors");
+            editors.setType(GROUP_TYPE);
+            identityService.saveGroup(editors);
+
+            identityService.createMembership("editor1", EDITORS);
+            identityService.createMembership("editor2", EDITORS);
         }
     }
 
