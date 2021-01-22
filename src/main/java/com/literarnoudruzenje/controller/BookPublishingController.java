@@ -3,6 +3,8 @@ package com.literarnoudruzenje.controller;
 import com.literarnoudruzenje.dto.FormFieldsDto;
 import com.literarnoudruzenje.dto.FormSubmissionDto;
 import com.literarnoudruzenje.dto.ProcessDto;
+import com.literarnoudruzenje.model.User;
+import com.literarnoudruzenje.services.UserService;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.TaskFormData;
@@ -30,21 +32,25 @@ public class BookPublishingController {
     private RuntimeService runtimeService;
 
     @Autowired
-    private RepositoryService repositoryService;
-
-    @Autowired
     TaskService taskService;
 
     @Autowired
     FormService formService;
 
-    @GetMapping(path = "/startBookPublishing")
+    @Autowired
+    UserService userService;
+
+    @GetMapping(path = "/startBookPublishing/{username}")
   //  @PreAuthorize("hasAnyAuthority('WRITER')")
-    public ProcessDto startReaderProcess(){
+    public ProcessDto startBookPublishingProcess(@PathVariable String username){
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("BookPublishing");
         runtimeService.setVariable(pi.getId(), "piId", pi.getId());
         ProcessDto processDto = new ProcessDto();
         processDto.setProcessId(pi.getId());
+        User user = userService.findByUsername(username);
+        runtimeService.setVariable(pi.getId(), "processWriterEmail", user.getEmail());
+        runtimeService.setVariable(pi.getId(), "processWriter", user.getUsername());
+        runtimeService.setVariable(pi.getId(), "fileLength", Long.parseLong("1"));
         return processDto;
     }
 
