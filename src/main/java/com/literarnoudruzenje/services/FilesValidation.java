@@ -22,7 +22,7 @@ public class FilesValidation implements JavaDelegate {
         List<FileValue> values = (List<FileValue>) delegateExecution.getVariable("files");
         Long length = (Long) delegateExecution.getVariable("fileLength");
 
-        if (values.size() < length) {
+        if (values.size() < length || values.size() > length) {
             delegateExecution.setVariable("fileUploadValid", false);
             throw new FormFieldInputException(String.format("You must import desired number of files."));
         }
