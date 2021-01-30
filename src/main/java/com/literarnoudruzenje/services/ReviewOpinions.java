@@ -8,16 +8,17 @@ import org.springframework.stereotype.Service;
 public class ReviewOpinions implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
+        delegateExecution.removeVariable("moreFiles");
         int more = (int) delegateExecution.getVariable("more");
         int accept = (int) delegateExecution.getVariable("accept");
         int decline = (int) delegateExecution.getVariable("decline");
         if(more > 0) {
-            delegateExecution.setVariable("opinion", "moreFiles");
+            delegateExecution.setVariable("opinionOnWriter", "moreFiles");
             return;
         } else if(decline > accept) {
-            delegateExecution.setVariable("opinion", "decline");
+            delegateExecution.setVariable("opinionOnWriter", "decline");
         } else {
-            delegateExecution.setVariable("opinion", "accept");
+            delegateExecution.setVariable("opinionOnWriter", "accept");
 
         }
     }
