@@ -13,6 +13,7 @@ public class ReviewOpinions implements JavaDelegate {
         int accept = (int) delegateExecution.getVariable("accept");
         int decline = (int) delegateExecution.getVariable("decline");
         if(more > 0) {
+            delegateExecution.setVariable("opinion", "morefiles");
             delegateExecution.setVariable("opinionOnWriter", "moreFiles");
             return;
         } else if(decline > accept) {
