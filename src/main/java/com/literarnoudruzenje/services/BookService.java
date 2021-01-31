@@ -1,7 +1,6 @@
 package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.model.Book;
-import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,4 +15,5 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    public Book findByTitle(String title) { return bookRepository.findByTitle(title); }
 }

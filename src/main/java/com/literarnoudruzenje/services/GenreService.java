@@ -17,4 +17,5 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
+    public Genre findByName(String name){ return genreRepository.findByName(name);}
 }
