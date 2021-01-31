@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select u from User u")
     List<User> findAllUsers();
+
+    List<User> findByType(String type);
 }
