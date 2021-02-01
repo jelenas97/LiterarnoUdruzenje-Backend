@@ -37,6 +37,7 @@ public class SaveBetaReaderService implements JavaDelegate {
         List<FormSubmissionDto> betaGenres = (List<FormSubmissionDto>)delegateExecution.getVariable("betaReaderForm");
         user.setBetaGenres(betaGenres.get(0).getFieldValues().stream()
                 .map(x -> new Genre(Long.parseLong(x),null)).collect(Collectors.toList()));
+        user.setPenaltyPoints((long) 0);
         for (FormSubmissionDto formField : registration) {
             if(formField.getFieldId().equals("firstName")) {
                 user.setFirstName(formField.getFieldValue());

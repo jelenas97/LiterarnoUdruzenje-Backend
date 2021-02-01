@@ -25,4 +25,6 @@ public class UserService {
     }
 
     public List<User> findByType(String type){ return this.userRepository.findByType(type);}
+
+    public User findById(Long id){ return  this.userRepository.findOneById(id);}
 }
