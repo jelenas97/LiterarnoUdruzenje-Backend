@@ -1,5 +1,6 @@
 package com.literarnoudruzenje.controller;
 
+import com.literarnoudruzenje.dto.CommentDto;
 import com.literarnoudruzenje.dto.FormFieldsDto;
 import com.literarnoudruzenje.dto.FormSubmissionDto;
 import com.literarnoudruzenje.dto.ProcessDto;
@@ -70,6 +71,13 @@ public class BookPublishingController {
         }
 
         return new FormFieldsDto(task.getId(), processId, properties);
+    }
+
+    @GetMapping(path = "/comments/{processId}", produces = "application/json")
+    public @ResponseBody
+    List<CommentDto> getComments(@PathVariable String processId) {
+        List<CommentDto> comments = (List<CommentDto>) runtimeService.getVariable(processId, "commentsFromBR");
+        return comments;
     }
 
     @PostMapping(path = "/post/{taskId}", produces = "application/json")
