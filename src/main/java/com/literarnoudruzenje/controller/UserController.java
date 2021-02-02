@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @GetMapping("/whoami")
-    @PreAuthorize("hasAnyAuthority('READER','BETAREADER', 'BOARDMEMBER', 'WRITER', 'EDITOR')")
+    @PreAuthorize("hasAnyAuthority('READER','BETAREADER', 'BOARDMEMBER', 'WRITER', 'EDITOR','LECTOR')")
     public User user(Principal user) {
         return this.userService.findByUsername(user.getName());
     }
