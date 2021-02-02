@@ -6,14 +6,11 @@ import com.literarnoudruzenje.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
-public class BookService {
+import java.util.List;
 
-    @Autowired
-    private BookRepository bookRepository;
 
-    public Book saveBook(Book book) {
-        return bookRepository.save(book);
-    }
+public interface BookService {
+    Book save(Book book);
+    List<Book> getAll();
 
 }

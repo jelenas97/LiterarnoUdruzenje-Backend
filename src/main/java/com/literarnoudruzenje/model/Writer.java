@@ -15,4 +15,7 @@ public class Writer extends User {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
     private List<Genre> genres;
+
+    @OneToMany(mappedBy = "writer")
+    private List<Book> books;
 }

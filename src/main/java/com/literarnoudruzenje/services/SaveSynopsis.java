@@ -37,6 +37,6 @@ public class SaveSynopsis implements JavaDelegate {
             }
         }
 
-        bookService.saveBook(book);
+        bookService.save(book);
     }
 }
