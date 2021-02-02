@@ -1,5 +1,6 @@
 package com.literarnoudruzenje.services;
 
+import com.literarnoudruzenje.dto.CommentDto;
 import com.literarnoudruzenje.dto.FormSubmissionDto;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -24,7 +25,8 @@ public class AssignBetaReadersService implements JavaDelegate {
             brList.add(userService.findById(Long.parseLong(id)).getUsername());
 
         }
+        List<CommentDto> comments = new ArrayList<CommentDto>();
         delegateExecution.setVariable( "assignedBetaReaders", brList);
-
+        delegateExecution.setVariable("commentsFromBR", comments);
     }
 }
