@@ -80,6 +80,20 @@ public class BookPublishingController {
         return comments;
     }
 
+    @GetMapping(path = "/lectorCorrections/{processId}", produces = "application/json")
+    public @ResponseBody
+    List<FormSubmissionDto> getLectorCorrections(@PathVariable String processId) {
+        List<FormSubmissionDto> correctionForm = (List<FormSubmissionDto>) runtimeService.getVariable(processId, "lectorForm");
+        return correctionForm;
+    }
+
+    @GetMapping(path = "/editorSuggestions/{processId}", produces = "application/json")
+    public @ResponseBody
+    List<FormSubmissionDto> getEditorSuggestions(@PathVariable String processId) {
+        List<FormSubmissionDto> correctionForm = (List<FormSubmissionDto>) runtimeService.getVariable(processId, "finalSuggestions");
+        return correctionForm;
+    }
+
     @PostMapping(path = "/post/{taskId}", produces = "application/json")
     public @ResponseBody
     ResponseEntity post(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId) {
