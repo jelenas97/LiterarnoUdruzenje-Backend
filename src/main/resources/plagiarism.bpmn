@@ -143,7 +143,7 @@
     <bpmn:subProcess id="Activity_0qgtf8x">
       <bpmn:incoming>Flow_0m4xuhp</bpmn:incoming>
       <bpmn:outgoing>Flow_1ftlz39</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${boardMembersList}" camunda:elementVariable="oneMember" />
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${editorsList}" camunda:elementVariable="editor" />
       <bpmn:startEvent id="Event_0wdxesv">
         <bpmn:outgoing>Flow_17bb0oh</bpmn:outgoing>
       </bpmn:startEvent>
@@ -219,7 +219,7 @@
             <camunda:string>Arrived new books which you need to compare</camunda:string>
           </camunda:field>
           <camunda:field name="receiver">
-            <camunda:string>${email}</camunda:string>
+            <camunda:expression>${editor.email}</camunda:expression>
           </camunda:field>
           <camunda:field name="subject">
             <camunda:string>Plagiarism</camunda:string>

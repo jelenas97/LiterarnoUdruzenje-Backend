@@ -2,17 +2,28 @@ package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.exceptions.FormFieldInputException;
 import com.literarnoudruzenje.model.User;
+import com.literarnoudruzenje.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+@Service
+@RequiredArgsConstructor
 public class EditorsValidation implements JavaDelegate {
+
+    private final UserRepository userRepository;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         Map<String, Object> formData = (Map<String, Object>) delegateExecution.getVariable("form-data");
-        List<User> editors = (List<User>) formData.get("editors");
+        List<String> editors = (List<String>) formData.get("editors");
+
+        List<User> editorsList = editors.stream().map(editorId -> userRepository.getOne(Long.parseLong(editorId))).collect(Collectors.toList());
 
         for (Map.Entry<String, Object> entry : formData.entrySet()) {
             if (entry.getValue() == null) {
@@ -22,6 +33,9 @@ public class EditorsValidation implements JavaDelegate {
                 if (editors.size() < 2) {
                     delegateExecution.setVariable("validation", false);
                     throw new FormFieldInputException(String.format("You must choose minimum 2 editors", entry.getKey()));
+                } else {
+                    delegateExecution.setVariable("validation", true);
+                    delegateExecution.setVariable("editorsList", editorsList);
                 }
 
             }
