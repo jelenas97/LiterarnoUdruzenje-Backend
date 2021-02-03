@@ -7,6 +7,7 @@ public class ValidateBookUpload implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
+        delegateExecution.setVariable("successfulChange", true);
 
     }
 }

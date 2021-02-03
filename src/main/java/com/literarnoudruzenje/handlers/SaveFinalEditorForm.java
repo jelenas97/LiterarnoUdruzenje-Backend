@@ -6,11 +6,12 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 
 import java.util.List;
 
-public class BetaReaderCommentsHandler implements TaskListener {
+public class SaveFinalEditorForm implements TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
         List<FormSubmissionDto> dto = (List<FormSubmissionDto>) delegateTask.getVariable("registration");
-        delegateTask.setVariable( "betaReaderCommentForm", dto);
+        delegateTask.setVariable( "finalSuggestions", dto);
+
     }
 }

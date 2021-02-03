@@ -11,7 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
-import java.util.List;
+import java.util.*;
+
 import com.literarnoudruzenje.dto.ProcessDto;
 import com.literarnoudruzenje.dto.TaskDto;
 import org.camunda.bpm.engine.*;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/user")
@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @GetMapping("/whoami")
-    @PreAuthorize("hasAnyAuthority('READER','BETAREADER', 'BOARDMEMBER', 'WRITER', 'EDITOR')")
+    @PreAuthorize("hasAnyAuthority('READER','BETAREADER', 'BOARDMEMBER', 'WRITER', 'EDITOR','LECTOR')")
     public User user(Principal user) {
         return this.userService.findByUsername(user.getName());
     }
@@ -74,8 +74,19 @@ public class UserController {
 
         List<TaskDto> dtos = new ArrayList<TaskDto>();
         for (Task task : tasks) {
-            TaskDto t = new TaskDto(task.getId(), task.getName(), task.getAssignee(), task.getCreateTime().toString());
+            String processInstanceId = task.getProcessInstanceId();
+            Map<String, Object> map= runtimeService.getVariables(processInstanceId);
+
+            HashMap<String,String> hashMap = new HashMap<>();
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                System.out.println(entry.getKey() + ":" + entry.getValue().toString());
+                hashMap.put(entry.getKey() , entry.getValue().toString());
+            }
+
+            TaskDto t = new TaskDto(task.getId(), task.getName(), task.getAssignee(), task.getCreateTime().toString() , hashMap);
             dtos.add(t);
+
+
         }
 
         return new ResponseEntity(dtos,  HttpStatus.OK);
