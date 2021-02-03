@@ -2,7 +2,6 @@ package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.exceptions.FormFieldInputException;
 import com.literarnoudruzenje.model.User;
-import com.literarnoudruzenje.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -16,14 +15,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EditorsValidation implements JavaDelegate {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         Map<String, Object> formData = (Map<String, Object>) delegateExecution.getVariable("form-data");
         List<String> editors = (List<String>) formData.get("editors");
 
-        List<User> editorsList = editors.stream().map(editorId -> userRepository.getOne(Long.parseLong(editorId))).collect(Collectors.toList());
+        List<User> editorsList = editors.stream().map(editorId -> userService.findById(Long.parseLong(editorId))).collect(Collectors.toList());
 
         for (Map.Entry<String, Object> entry : formData.entrySet()) {
             if (entry.getValue() == null) {
