@@ -69,7 +69,7 @@ public class SaveWriterService implements JavaDelegate {
             }
 
         }
-        Authority authority = authorityService.findByName("Writer");
+        Authority authority = authorityService.findByName("WRITER");
         List<Authority> authorities = new ArrayList<>();
         authorities.add(authority);
         user.setAuthorities(authorities);
