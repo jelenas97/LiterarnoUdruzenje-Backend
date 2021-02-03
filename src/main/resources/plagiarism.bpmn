@@ -111,9 +111,9 @@
     <bpmn:userTask id="Activity_0jshtih" name="Decide if it is &#10;plagiarism or not" camunda:assignee="${boardMember.username}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="finalDecision" type="enum">
-            <camunda:value id="plagiarism" name="Plagiarism" />
-            <camunda:value id="notPlagiarism" name="Not Plagiarism" />
+          <camunda:formField id="finalDecision" label="Final Decision" type="enum">
+            <camunda:value id="true" name="Plagiarism" />
+            <camunda:value id="false" name="Not Plagiarism" />
           </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
@@ -164,6 +164,7 @@
               </camunda:validation>
             </camunda:formField>
           </camunda:formData>
+          <camunda:taskListener class="com.literarnoudruzenje.handlers.WriteNotesHandler" event="complete" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1hqn3zd</bpmn:incoming>
         <bpmn:incoming>Flow_0169oyr</bpmn:incoming>
