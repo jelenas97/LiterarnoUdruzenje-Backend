@@ -1,6 +1,5 @@
 package com.literarnoudruzenje.handlers;
 
-import com.literarnoudruzenje.model.Genre;
 import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ public class GetEditorsHandler implements TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
-
         TaskFormData taskFormData = delegateTask.getExecution().getProcessEngineServices()
                 .getFormService().getTaskFormData(delegateTask.getId());
         List<User> editors = userService.findAllByType("EDITOR");
