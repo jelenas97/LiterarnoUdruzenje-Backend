@@ -24,4 +24,8 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
     private List<Genre> genres;
+
+    @ManyToOne
+    @JoinColumn(name="writer_id", nullable=false)
+    private Writer writer;
 }

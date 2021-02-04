@@ -1,32 +1,28 @@
 package com.literarnoudruzenje.controller;
-import org.apache.commons.io.FileUtils;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
+
 import com.literarnoudruzenje.dto.FormFieldsDto;
 import com.literarnoudruzenje.dto.FormSubmissionDto;
 import com.literarnoudruzenje.dto.ProcessDto;
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.TaskFormData;
-import org.camunda.bpm.engine.impl.form.validator.FormFieldValidationException;
-import org.camunda.bpm.engine.impl.form.validator.FormFieldValidatorException;
 import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.FileValue;
-import org.camunda.bpm.model.bpmn.instance.Process;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.xpath.XPath;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,9 +78,6 @@ public class RegistrationController {
         }
         TaskFormData tfd = formService.getTaskFormData(task.getId());
         List<FormField> properties = tfd.getFormFields();
-
-
-
         return new FormFieldsDto(task.getId(), processId, properties);
     }
 
@@ -107,7 +100,7 @@ public class RegistrationController {
 
     @PostMapping(path = "/post/{taskId}", produces = "application/json")
     public @ResponseBody ResponseEntity post(@RequestBody List<FormSubmissionDto> dto, @PathVariable String taskId) {
-        HashMap<String, Object> map = this.mapListToDto(dto);
+        HashMap<String, Object> map = mapListToDto(dto);
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
         runtimeService.setVariable(processInstanceId, "form-data", map);

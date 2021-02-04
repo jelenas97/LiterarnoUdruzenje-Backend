@@ -1,27 +1,29 @@
 package com.literarnoudruzenje.controller;
 
+import com.literarnoudruzenje.dto.TaskDto;
 import com.literarnoudruzenje.dto.UserDTO;
 import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.services.UserService;
-import com.literarnoudruzenje.services.UserServiceInterface;
+import org.camunda.bpm.engine.FormService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.*;
 
-import com.literarnoudruzenje.dto.ProcessDto;
-import com.literarnoudruzenje.dto.TaskDto;
-import org.camunda.bpm.engine.*;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.task.Task;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -32,32 +34,23 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private UserServiceInterface userServiceInterface;
-
-    @Autowired
-    IdentityService identityService;
-
-    @Autowired
-    private RuntimeService runtimeService;
-
-    @Autowired
-    private RepositoryService repositoryService;
-
-    @Autowired
     TaskService taskService;
+
+    @Autowired
+    RuntimeService runtimeService;
 
     @Autowired
     FormService formService;
 
-    @GetMapping(produces="application/json")
-    public ResponseEntity<?> getUsers(){
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<?> getUsers() {
 
         try {
-            List<UserDTO> users = this.userServiceInterface.findAllUsers();
+            List<UserDTO> users = userService.findAll();
 
             return new ResponseEntity<>(users, HttpStatus.OK);
 
-        }catch(NullPointerException e){
+        } catch (NullPointerException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error while loading users");
         }
     }
@@ -65,11 +58,11 @@ public class UserController {
     @GetMapping("/whoami")
     @PreAuthorize("hasAnyAuthority('READER','BETAREADER', 'BOARDMEMBER', 'WRITER', 'EDITOR','LECTOR')")
     public User user(Principal user) {
-        return this.userService.findByUsername(user.getName());
+        return userService.findByUsername(user.getName());
     }
 
     @GetMapping(path = "/tasks/{username}")
-    public ResponseEntity getAllTasks(@PathVariable String username){
+    public ResponseEntity getAllTasks(@PathVariable String username) {
         List<Task> tasks = taskService.createTaskQuery().taskAssignee(username).list();
 
         List<TaskDto> dtos = new ArrayList<TaskDto>();
@@ -89,7 +82,7 @@ public class UserController {
 
         }
 
-        return new ResponseEntity(dtos,  HttpStatus.OK);
+        return new ResponseEntity(dtos, HttpStatus.OK);
 
     }
 

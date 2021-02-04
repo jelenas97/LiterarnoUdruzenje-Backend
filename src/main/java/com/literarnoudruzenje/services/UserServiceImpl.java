@@ -5,37 +5,26 @@ import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserServiceInterface {
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AuthorityService authorityService;
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
 
-   @Override
-    public List<UserDTO> findAllUsers() {
-        this.userRepository.findAllUsers();
-        List<UserDTO> users = new ArrayList<>();
-        for (User u : this.userRepository.findAllUsers()) {
-            users.add(new UserDTO(u));
-        }
-        return users;
+    @Override
+    public List<UserDTO> findAll() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(UserDTO::new).collect(Collectors.toList());
     }
 
     @Override
     public User findByEmail(String email) {
-        return this.userRepository.findByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -44,11 +33,19 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
     @Override
-    public User findById(Long id) {
-        return this.userRepository.findOneById(id);
+    public List<User> findByType(String type) {
+        return userRepository.findByType(type);
     }
 
     @Override
-    public  User saveUser(User user){ return this.userRepository.save(user);}
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findOneById(id);
+    }
+
 
 }

@@ -1,6 +1,9 @@
 package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.dto.FormSubmissionDto;
+import com.literarnoudruzenje.model.Authority;
+import com.literarnoudruzenje.model.Genre;
+import com.literarnoudruzenje.model.Reader;
 import com.literarnoudruzenje.model.*;
 import com.literarnoudruzenje.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +82,7 @@ public class SaveReaderService implements JavaDelegate {
             List<Authority> authorities = new ArrayList<>();
             authorities.add(authority);
             user.setAuthorities(authorities);
-            userService.saveUser(user);
+            userService.save(user);
         } else {
             Reader user = new Reader();
             List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("readerForm");
@@ -126,7 +129,7 @@ public class SaveReaderService implements JavaDelegate {
             List<Authority> authorities = new ArrayList<>();
             authorities.add(authority);
             user.setAuthorities(authorities);
-            userService.saveUser(user);
+            userService.save(user);
         }
 
     }

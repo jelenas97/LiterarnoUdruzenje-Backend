@@ -1,9 +1,8 @@
 package com.literarnoudruzenje.services;
 
-import org.camunda.bpm.engine.IdentityService;
+import com.literarnoudruzenje.model.User;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +13,14 @@ import java.util.List;
 public class AssigningBoardMembersService implements JavaDelegate {
 
     @Autowired
-    IdentityService identityService;
+    UserService userService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        List<User> userList = identityService.createUserQuery().memberOfGroup("boardMembers").list();
-        List<String> userIds = new ArrayList<>();
-        for(User u : userList) {
-            userIds.add(u.getId());
-            System.out.println(u.getId());
-        }
-        delegateExecution.setVariable("boardMembersList", userIds);
+        List<User> boardMembers = userService.findByType("BOARDMEMBER");
+        List<String> finalDecisions = new ArrayList<>();
+        delegateExecution.setVariable("boardMembers", boardMembers);
+        delegateExecution.setVariable("finalDecisions", finalDecisions);
         delegateExecution.setVariable("accept", 0);
         delegateExecution.setVariable("more", 0);
         delegateExecution.setVariable("decline", 0);
