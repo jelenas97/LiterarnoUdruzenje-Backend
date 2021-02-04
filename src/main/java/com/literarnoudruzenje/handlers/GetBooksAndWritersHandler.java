@@ -37,7 +37,7 @@ public class GetBooksAndWritersHandler implements TaskListener {
                     HashMap<String, String> values = (HashMap<String, String>) f.getType().getInformation("values");
                     values.clear();
                     for(Book book : books) {
-                        values.put(book.getId().toString(),book.getTitle() + " " + book.getWriter().getFirstName() + " " + book.getWriter().getLastName());
+                        values.put(book.getId().toString(),book.getTitle() + " - " + book.getWriter().getFirstName() + " " + book.getWriter().getLastName());
                     }
                 }
             }

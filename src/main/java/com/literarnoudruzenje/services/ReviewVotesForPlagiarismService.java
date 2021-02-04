@@ -15,6 +15,12 @@ public class ReviewVotesForPlagiarismService implements JavaDelegate {
 
         if (finalDecisions.stream().distinct().count() <= 1) {
             delegateExecution.setVariable("unanimous", true);
+            if(finalDecisions.get(0).equals("true")) {
+                delegateExecution.setVariable("isPlagiarism", true);
+            } else {
+                delegateExecution.setVariable("isPlagiarism", false);
+
+            }
         } else {
             delegateExecution.setVariable("unanimous", false);
         }
