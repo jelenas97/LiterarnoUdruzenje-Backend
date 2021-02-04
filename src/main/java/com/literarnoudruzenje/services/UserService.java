@@ -9,23 +9,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+public interface UserService {
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
-    }
+    User save(User user);
 
-    public User findByUsername(String username) {
-        return this.userRepository.findByUsername(username);
-    }
+    User findByUsername(String username);
 
-    public User findByEmail(String email) {
-        return this.userRepository.findByEmail(email);
-    }
+    public User findByEmail(String email);
 
-    public List<User> findByType(String type){ return this.userRepository.findByType(type);}
+    public User findById(Long id);
 
-    public User findById(Long id){ return  this.userRepository.findOneById(id);}
+    public List<UserDTO> findAll();
+
+    public List<User> findByType(String type);
+
 }

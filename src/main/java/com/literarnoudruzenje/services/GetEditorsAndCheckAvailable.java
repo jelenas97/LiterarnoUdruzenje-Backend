@@ -24,7 +24,7 @@ public class GetEditorsAndCheckAvailable implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        List<User> editors = userService.findAllByType("EDITOR");
+        List<User> editors = userService.findByType("EDITOR");
         List<User> editorsSelected = (List<User>) delegateExecution.getVariable("editorsList");
         List<User> newEditors = new ArrayList<User>();
         for(User editor : editors) {

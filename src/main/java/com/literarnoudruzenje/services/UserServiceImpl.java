@@ -33,8 +33,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllByType(String type) {
-        return userRepository.findAllByType(type);
+    public List<User> findByType(String type) {
+        return userRepository.findByType(type);
     }
 
     @Override

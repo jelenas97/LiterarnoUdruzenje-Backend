@@ -5,6 +5,7 @@ import com.literarnoudruzenje.dto.UserDTO;
 import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.services.UserService;
 import org.camunda.bpm.engine.FormService;
+import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class UserController {
 
     @Autowired
     TaskService taskService;
+
+    @Autowired
+    RuntimeService runtimeService;
 
     @Autowired
     FormService formService;

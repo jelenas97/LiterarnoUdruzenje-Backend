@@ -12,5 +12,5 @@ public interface BookService {
     Book save(Book book);
     List<Book> getAll();
 
-    public Book findByTitle(String title) { return bookRepository.findByTitle(title); }
+    public Book findByTitle(String title);
 }

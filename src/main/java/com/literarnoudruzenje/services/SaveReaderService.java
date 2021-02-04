@@ -82,7 +82,7 @@ public class SaveReaderService implements JavaDelegate {
             List<Authority> authorities = new ArrayList<>();
             authorities.add(authority);
             user.setAuthorities(authorities);
-            userService.saveUser(user);
+            userService.save(user);
         } else {
             Reader user = new Reader();
             List<FormSubmissionDto> registration = (List<FormSubmissionDto>)delegateExecution.getVariable("readerForm");
@@ -129,7 +129,7 @@ public class SaveReaderService implements JavaDelegate {
             List<Authority> authorities = new ArrayList<>();
             authorities.add(authority);
             user.setAuthorities(authorities);
-            userService.saveUser(user);
+            userService.save(user);
         }
 
     }

@@ -24,7 +24,7 @@ public class GetEditorsReplacementHandler implements TaskListener {
     public void notify(DelegateTask delegateTask) {
         TaskFormData taskFormData = delegateTask.getExecution().getProcessEngineServices()
                 .getFormService().getTaskFormData(delegateTask.getId());
-        List<User> editors = userService.findAllByType("EDITOR");
+        List<User> editors = userService.findByType("EDITOR");
         List<FormField> fields = taskFormData.getFormFields();
         List<User> editorsSelected = (List<User>) delegateTask.getExecution().getVariable("editorsList");
         List<User> newEditors = new ArrayList<User>();
