@@ -29,5 +29,6 @@ public class SendCommentsToAuthor implements JavaDelegate {
         CommentDto commentDto = new CommentDto((String) this.betaReader.getValue(delegateExecution), comment);
         comments.add(commentDto);
         delegateExecution.setVariable("commentsFromBR", comments);
+        delegateExecution.setVariable("anyComment", true);
     }
 }

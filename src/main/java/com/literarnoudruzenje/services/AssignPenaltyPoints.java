@@ -17,9 +17,6 @@ import java.util.List;
 @Service
 public class AssignPenaltyPoints implements JavaDelegate {
 
-   /* @Autowired
-    UserService userService;*/
-
     @Autowired
     BetaReaderRepository betaReaderRepository;
 
@@ -51,7 +48,6 @@ public class AssignPenaltyPoints implements JavaDelegate {
             betaReaderRepository.save(br);
             b=true;
         }
-        delegateExecution.setVariable("brEmail", br.getEmail());
         delegateExecution.setVariable( "fivePoints", b);
     }
 }

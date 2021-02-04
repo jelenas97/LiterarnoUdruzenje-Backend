@@ -53,8 +53,12 @@ public class OfferBetaReadersService implements JavaDelegate {
                }
            }
         }
-        delegateExecution.setVariable("betaReadersByGenre", betaReadersByGenre);
 
-
+        if(betaReadersByGenre.size()==0){
+            delegateExecution.setVariable("anyBetaReader", false);
+        } else{
+            delegateExecution.setVariable("anyBetaReader", true);
+            delegateExecution.setVariable("betaReadersByGenre", betaReadersByGenre);
+        }
     }
 }
