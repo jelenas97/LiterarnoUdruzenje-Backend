@@ -1,8 +1,7 @@
 package com.literarnoudruzenje.controller;
 
-import com.literarnoudruzenje.dto.FormFieldsDto;
-import com.literarnoudruzenje.dto.FormSubmissionDto;
-import com.literarnoudruzenje.dto.ProcessDto;
+import com.literarnoudruzenje.dto.*;
+import com.literarnoudruzenje.model.Book;
 import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.services.UserService;
 import org.camunda.bpm.engine.*;
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -42,16 +43,22 @@ public class BookPublishingController {
 
     @GetMapping(path = "/startBookPublishing/{username}")
   //  @PreAuthorize("hasAnyAuthority('WRITER')")
-    public ProcessDto startBookPublishingProcess(@PathVariable String username){
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("BookPublishing");
-        runtimeService.setVariable(pi.getId(), "piId", pi.getId());
-        ProcessDto processDto = new ProcessDto();
-        processDto.setProcessId(pi.getId());
-        User user = userService.findByUsername(username);
-        runtimeService.setVariable(pi.getId(), "processWriterEmail", user.getEmail());
-        runtimeService.setVariable(pi.getId(), "processWriter", user.getUsername());
-        runtimeService.setVariable(pi.getId(), "fileLength", Long.parseLong("1"));
-        return processDto;
+    public @ResponseBody ResponseEntity startBookPublishingProcess(@PathVariable String username){
+
+        if(userService.findByUsername(username).getType().equals("WRITER")){
+            ProcessInstance pi = runtimeService.startProcessInstanceByKey("BookPublishing");
+            runtimeService.setVariable(pi.getId(), "piId", pi.getId());
+            ProcessDto processDto = new ProcessDto();
+            processDto.setProcessId(pi.getId());
+            User user = userService.findByUsername(username);
+            runtimeService.setVariable(pi.getId(), "processWriterEmail", user.getEmail());
+            runtimeService.setVariable(pi.getId(), "processWriter", user.getUsername());
+            runtimeService.setVariable(pi.getId(), "fileLength", Long.parseLong("1"));
+            return ResponseEntity.ok(processDto);
+        } else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
     }
 
     @GetMapping(path = "/get/{processId}", produces = "application/json")
@@ -70,6 +77,60 @@ public class BookPublishingController {
         }
 
         return new FormFieldsDto(task.getId(), processId, properties);
+    }
+
+    @GetMapping(path = "/comments/{processId}", produces = "application/json")
+    public @ResponseBody
+    List<CommentDto> getComments(@PathVariable String processId) {
+        List<CommentDto> comments = (List<CommentDto>) runtimeService.getVariable(processId, "commentsFromBR");
+        return comments;
+    }
+
+    @GetMapping(path = "/lectorCorrections/{processId}", produces = "application/json")
+    public @ResponseBody
+    List<FormSubmissionDto> getLectorCorrections(@PathVariable String processId) {
+        List<FormSubmissionDto> correctionForm = (List<FormSubmissionDto>) runtimeService.getVariable(processId, "lectorForm");
+        return correctionForm;
+    }
+
+    @GetMapping(path = "/editorSuggestions/{processId}", produces = "application/json")
+    public @ResponseBody
+    List<FormSubmissionDto> getEditorSuggestions(@PathVariable String processId) {
+        List<FormSubmissionDto> correctionForm = (List<FormSubmissionDto>) runtimeService.getVariable(processId, "finalSuggestions");
+        return correctionForm;
+    }
+
+    @GetMapping(path = "/bookDetails/{processId}", produces = "application/json")
+    public @ResponseBody
+    BookDetailsDTO getBookDetails(@PathVariable String processId) {
+
+        String writer = (String) runtimeService.getVariable(processId, "processWriter");
+        String title = (String) runtimeService.getVariable(processId, "title");
+        List<String> plagiarisms = (List<String>) runtimeService.getVariable(processId, "detectedPlagiarisms");
+
+        BookDetailsDTO dto = new BookDetailsDTO(writer, title, plagiarisms);
+        return dto;
+    }
+
+    @GetMapping(path = "/synopsis/{processId}", produces = "application/json")
+    public @ResponseBody
+    SynopsisDTO getSynopsis(@PathVariable String processId) {
+        String writer  = (String) runtimeService.getVariable(processId, "processWriter");
+        String title= (String) runtimeService.getVariable(processId, "title");
+        String synopsis= (String) runtimeService.getVariable(processId, "synopsis");
+
+        SynopsisDTO dto = new SynopsisDTO(writer, title, synopsis);
+        return dto;
+    }
+
+    @GetMapping(path = "/submissionDetails/{processId}", produces = "application/json")
+    public @ResponseBody
+    SubmissionDetailsDTO getSubmissionDetails(@PathVariable String processId) {
+        String pId =taskService.createTaskQuery().taskId(processId).singleResult().getProcessInstanceId();
+        String chiefEditor = (String) runtimeService.getVariable(pId, "chiefEditor");
+        String title= (String) runtimeService.getVariable(pId, "title");
+        SubmissionDetailsDTO dto = new SubmissionDetailsDTO(chiefEditor, title);
+        return dto;
     }
 
     @PostMapping(path = "/post/{taskId}", produces = "application/json")
