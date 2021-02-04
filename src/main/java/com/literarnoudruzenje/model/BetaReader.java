@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("BETAREADER")
 public class BetaReader extends User{
+
     @ManyToMany
     @JoinTable(name = "reader_genres",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -20,5 +21,17 @@ public class BetaReader extends User{
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
     private List<Genre> betaGenres;
+
+
+    @Column
+    private Long penaltyPoints;
+
+    public Long getPenaltyPoints() {
+        return penaltyPoints;
+    }
+
+    public void setPenaltyPoints(Long penaltyPoints) {
+        this.penaltyPoints = penaltyPoints;
+    }
 
 }

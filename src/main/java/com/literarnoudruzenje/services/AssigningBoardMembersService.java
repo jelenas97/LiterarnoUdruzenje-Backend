@@ -17,7 +17,7 @@ public class AssigningBoardMembersService implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        List<User> boardMembers = userService.findAllByType("BOARDMEMBER");
+        List<User> boardMembers = userService.findByType("BOARDMEMBER");
         List<String> finalDecisions = new ArrayList<>();
         delegateExecution.setVariable("boardMembers", boardMembers);
         delegateExecution.setVariable("finalDecisions", finalDecisions);

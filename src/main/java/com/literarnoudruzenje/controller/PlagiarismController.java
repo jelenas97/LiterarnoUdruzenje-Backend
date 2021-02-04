@@ -9,6 +9,7 @@ import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,10 +46,11 @@ public class PlagiarismController {
         return processDto;
     }
 
-    @GetMapping(path = "/plagiarism/{processId}", produces = "application/json")
+    @GetMapping(path = "/notes/{processId}", produces = "application/json")
     public @ResponseBody
-    List<NoteDto> getComments(@PathVariable String processId) {
-        List<NoteDto> comments = (List<NoteDto>) runtimeService.getVariable(processId, "commentsFromBR");
-        return comments;
+    List<NoteDto> getNotes(@PathVariable String processId) {
+        Task task = taskService.createTaskQuery().taskId(processId).singleResult();
+        List<NoteDto> notes = (List<NoteDto>) runtimeService.getVariable(task.getProcessInstanceId(), "notes");
+        return notes;
     }
 }
