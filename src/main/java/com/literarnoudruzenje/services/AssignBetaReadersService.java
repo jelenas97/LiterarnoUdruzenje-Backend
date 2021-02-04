@@ -28,5 +28,6 @@ public class AssignBetaReadersService implements JavaDelegate {
         List<CommentDto> comments = new ArrayList<CommentDto>();
         delegateExecution.setVariable( "assignedBetaReaders", brList);
         delegateExecution.setVariable("commentsFromBR", comments);
+        delegateExecution.setVariable("anyComment", false);
     }
 }
