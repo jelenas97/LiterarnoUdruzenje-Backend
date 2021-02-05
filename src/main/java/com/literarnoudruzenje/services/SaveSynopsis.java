@@ -4,6 +4,7 @@ import com.literarnoudruzenje.dto.FormSubmissionDto;
 import com.literarnoudruzenje.model.Book;
 import com.literarnoudruzenje.model.Genre;
 import com.literarnoudruzenje.model.Writer;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,10 @@ public class SaveSynopsis implements JavaDelegate {
 
         Writer user = (Writer) userService.findByEmail(processWriterEmail);
         book.setWriter(user);
-        bookService.save(book);
+        try {
+            bookService.save(book);
+        } catch (Exception e) {
+            throw new BpmnError("AlreadyExists");
+        }
     }
 }

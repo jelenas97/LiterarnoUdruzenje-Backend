@@ -3,6 +3,7 @@ package com.literarnoudruzenje.services;
 import com.literarnoudruzenje.dto.FormSubmissionDto;
 import com.literarnoudruzenje.model.Book;
 import com.literarnoudruzenje.repository.BookRepository;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,12 @@ public class PlagiarismSystemService implements JavaDelegate {
 
         String bookTitle = delegateExecution.getVariable("title").toString();
         Book book = bookService.findByTitle(bookTitle);
-        ArrayList<String> detectedPlagiarisms = plagiarismMockService.scanPlagiarism(book);
+        ArrayList<String> detectedPlagiarisms;
+        try {
+            detectedPlagiarisms = plagiarismMockService.scanPlagiarism(book);
+        } catch (Exception e) {
+            throw new BpmnError("ServiceUnavailable");
+        }
         delegateExecution.setVariable("detectedPlagiarisms", detectedPlagiarisms);
     }
 }

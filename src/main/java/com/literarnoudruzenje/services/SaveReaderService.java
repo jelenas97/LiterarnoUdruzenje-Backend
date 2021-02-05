@@ -77,7 +77,7 @@ public class SaveReaderService implements JavaDelegate {
                 }
 
             }
-
+            user.setPenaltyPoints(0l);
             Authority authority = authorityService.findByName("BETAREADER");
             List<Authority> authorities = new ArrayList<>();
             authorities.add(authority);

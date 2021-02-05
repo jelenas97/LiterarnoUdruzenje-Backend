@@ -1,6 +1,7 @@
 package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.model.User;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class AssigningBoardMembersService implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
         List<User> boardMembers = userService.findByType("BOARDMEMBER");
         List<String> finalDecisions = new ArrayList<>();
+        if(boardMembers.size() == 0) {
+            throw new BpmnError("NoBoardMembers");
+        }
         delegateExecution.setVariable("boardMembers", boardMembers);
         delegateExecution.setVariable("finalDecisions", finalDecisions);
         delegateExecution.setVariable("accept", 0);

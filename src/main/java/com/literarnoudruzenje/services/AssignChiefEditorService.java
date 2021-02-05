@@ -2,6 +2,7 @@ package com.literarnoudruzenje.services;
 
 import com.literarnoudruzenje.model.User;
 import org.camunda.bpm.engine.IdentityService;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,12 @@ public class AssignChiefEditorService implements JavaDelegate {
             }*/
 
             List<User> users = userService.findByType("EDITOR");
-            String username = users.get(0).getUsername();
+            String username;
+            try {
+                username = users.get(0).getUsername();
+            } catch (Exception e) {
+                throw new BpmnError("NoChiefEditor");
+            }
             String email = users.get(0).getEmail();
 
                 delegateExecution.setVariable("chiefEditor", username);

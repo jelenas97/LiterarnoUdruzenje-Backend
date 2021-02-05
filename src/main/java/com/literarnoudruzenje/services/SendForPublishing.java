@@ -79,7 +79,7 @@ public class SendForPublishing implements JavaDelegate {
                 outputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new BpmnError("Saving files failed!");
+                throw new BpmnError("SavingFailed");
             }
         }
         publishedBookService.save(publishedBook);

@@ -1,5 +1,6 @@
 package com.literarnoudruzenje.services;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,13 @@ public class ProceedPayment implements JavaDelegate {
         Long ccn = (Long) delegateExecution.getVariable("ccn");
         Long cvvCode = (Long) delegateExecution.getVariable("cvvcode");
         String nameOnCard = (String) delegateExecution.getVariable("nameOnCard");
-
-        if(paymentService.pay(ccn,cvvCode,nameOnCard)) {
+        boolean succeded;
+        try {
+            succeded = paymentService.pay(ccn,cvvCode,nameOnCard);
+        } catch (Exception e) {
+            throw new BpmnError("PaymentFailed");
+        }
+        if(succeded) {
             delegateExecution.setVariable("paymentSucceed", true);
         } else {
             delegateExecution.setVariable("paymentSucceed", false);
