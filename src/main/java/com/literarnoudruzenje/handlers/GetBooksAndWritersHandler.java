@@ -2,8 +2,10 @@ package com.literarnoudruzenje.handlers;
 
 import com.literarnoudruzenje.model.Book;
 import com.literarnoudruzenje.model.Genre;
+import com.literarnoudruzenje.model.PublishedBook;
 import com.literarnoudruzenje.model.User;
 import com.literarnoudruzenje.services.BookService;
+import com.literarnoudruzenje.services.PublishedBookService;
 import com.literarnoudruzenje.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateTask;
@@ -21,7 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetBooksAndWritersHandler implements TaskListener {
 
-    private final BookService bookService;
+    @Autowired
+    private PublishedBookService publishedBookService;
 
     @Override
     public void notify(DelegateTask delegateTask) {
@@ -29,14 +32,14 @@ public class GetBooksAndWritersHandler implements TaskListener {
                 .getFormService().getTaskFormData(delegateTask.getId());
         List<FormField> fields = taskFormData.getFormFields();
 
-        List<Book> books = bookService.getAll();
+        List<PublishedBook> books = publishedBookService.getAll();
 
         if(fields != null) {
             for(FormField f: fields) {
                 if(f.getId().equals("originalBook") || f.getId().equals("plagiarismBook")) {
                     HashMap<String, String> values = (HashMap<String, String>) f.getType().getInformation("values");
                     values.clear();
-                    for(Book book : books) {
+                    for(PublishedBook book : books) {
                         values.put(book.getId().toString(),book.getTitle() + " - " + book.getWriter().getFirstName() + " " + book.getWriter().getLastName());
                     }
                 }

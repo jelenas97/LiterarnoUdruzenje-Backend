@@ -1,8 +1,11 @@
 package com.literarnoudruzenje.controller;
 
+import com.literarnoudruzenje.dto.FilesPlagiarismDTO;
 import com.literarnoudruzenje.dto.FormFieldsDto;
 import com.literarnoudruzenje.dto.FormSubmissionDto;
 import com.literarnoudruzenje.dto.ProcessDto;
+import com.literarnoudruzenje.model.PublishedBook;
+import com.literarnoudruzenje.services.PublishedBookService;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.camunda.bpm.engine.*;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.StandardCopyOption;
@@ -40,6 +44,9 @@ public class RegistrationController {
 
     @Autowired
     private RuntimeService runtimeService;
+
+    @Autowired
+    private PublishedBookService publishedBookService;
 
     @Autowired
     private RepositoryService repositoryService;
@@ -180,6 +187,43 @@ public class RegistrationController {
                 .body(resource);
     }
 
+    @RequestMapping(path = "/downloadFromSystem/{fileName}", method = RequestMethod.GET)
+    public ResponseEntity<Resource> downloadFromSystem(@PathVariable String fileName,@RequestParam("taskId") String taskId) throws IOException {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName + ".pdf");
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        String rootPath = System.getProperty("user.dir");
+        //LINUX
+        String resourceFile = rootPath + "/books/" + fileName + ".pdf";
+        //WINDOWS String resourceFile = rootPath + "\\books\\" + fileName + ".pdf";
+        File targetFile = new File(resourceFile);
+
+        InputStream in = new FileInputStream(targetFile);
+        //new ClassPathResource(
+        //        "data/employees.dat").getInputStream()
+        java.nio.file.Files.copy(
+                in,
+                targetFile.toPath(),
+                StandardCopyOption.REPLACE_EXISTING);
+
+        byte[] bytes = FileUtils.readFileToByteArray(targetFile);
+
+
+        IOUtils.closeQuietly(in);
+
+        ByteArrayResource resource = new ByteArrayResource(bytes);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(targetFile.length())
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+    }
+
     @GetMapping(path = "/files/{taskId}", produces = "application/json")
     public @ResponseBody List<String> getFileNames(@PathVariable String taskId) {
 
@@ -192,6 +236,24 @@ public class RegistrationController {
         }
         return fileNames;
     }
+
+    @GetMapping(path = "/filesPlagiarism/{taskId}", produces = "application/json")
+    public @ResponseBody
+    FilesPlagiarismDTO getFileNamesPlagiarism(@PathVariable String taskId) {
+
+        FilesPlagiarismDTO fileNames = new FilesPlagiarismDTO();
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        String processInstanceId = task.getProcessInstanceId();
+        String originalId = (String) runtimeService.getVariable(processInstanceId,"originalBook");
+        String plagiarismId = (String) runtimeService.getVariable(processInstanceId,"plagiarismBook");
+
+        PublishedBook originalBook = publishedBookService.getById(Long.parseLong(originalId));
+        PublishedBook plagiarismBook = publishedBookService.getById(Long.parseLong(plagiarismId));
+        fileNames.setOriginal(originalBook.getWork());
+        fileNames.setPlagiarism(plagiarismBook.getWork());
+        return fileNames;
+    }
+
 
     private HashMap<String, Object> mapListToDto(List<FormSubmissionDto> list)
     {
